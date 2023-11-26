@@ -1,7 +1,7 @@
 ---
 title: Homework 7 - Creating a resume database
-author: (your name goes here!)
-date: last-modified
+author: Benjamin Estrada
+date: 11/11/2023
 format:
     html:
         theme: cosmo
@@ -10,11 +10,18 @@ format:
         code-copy: true
 ---
 
-(include a brief description of what is in this document)
+(The document appears to be a scaffold for a homework assignment titled "Homework 7 - Creating a resume database" authored by Benjamin Estrada on 11/11/2023. It outlines a series of tasks related to creating and interacting with a resume database. The document includes Python code snippets using libraries like Pandas, SQLAlchemy, and IPython to interact with a MySQL database.
 
-(Please clean up any comments that I included.  This is a scaffold document.)
+The scaffold includes sections such as:
 
-GITHUB URL:  <your URL goes here!>
+Overview and description: a brief introduction to the project and the database being created.
+Crows-foot diagram: Contains an entity-relationship diagram illustrating the relationships between the tables in the database.
+Examples of data in the database: Provides descriptions of tables like people, skills, and roles with code snippets to display sample data from these tables.
+Sample queries: Presents various SQL queries (like listing skill names, people's names and email addresses, etc.) along with expected sample results.
+Reflection: A section prompting the author to reflect on their experience with the assignment. )
+
+
+GITHUB URL:  <https://github.com/cmsc-vcu/cmsc508-fa2023-hw7-io-benjamin>
 
 ```{python}
 #| eval: true
@@ -92,30 +99,90 @@ except Exception as e:
 
 ## Overview and description
 
-(briefly describe the project and the database)
+The project involves creating a relational database for managing resumes, skills, roles, and people-related information. The database is designed to organize and store data about individuals (people), their skills, roles assigned, and associated metadata. It encompasses tables for people, skills, roles, peopleskills, and peopleroles. The people table holds personal details, skills table contains various skills, roles table represents different roles, while peopleskills and peopleroles serve as junction tables linking people with their respective skills and roles. This database serves as a comprehensive repository to manage and analyze resume-related data for individuals in various roles and skillsets.
 
 ## Crows-foot diagram
 
-(add a description of the diagram and what the reader is seeing.)
+The provided Mermaid diagram illustrates the relationships between various tables in the database schema. It shows how different entities are interconnected:
+
+SKILLS: Represents skills with attributes like ID, name, description, and tag.
+PEOPLE: Contains information about individuals with attributes such as people_id, first_name, last_name, email, linkedin_url, headshot_url, discord_handle, and brief_bio.
+PEOPLE_SKILLS: Serves as an associative table linking people with their acquired skills. It includes fields for ID, skills_id, people_id, and date_acquired.
+ROLES: Defines various roles with attributes ID, name, and sort_priority.
+PEOPLE_ROLES: Represents the association between people and roles, containing fields like ID, people_id, role_id, and date_assigned.
 
 ```{mermaid}
-%%| echo: false
 erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
-    CUSTOMER{
+    SKILLS ||--o{ PEOPLE_SKILLS : "0..*" 
+    PEOPLE ||--o{ PEOPLE_SKILLS : "0..*"
+    PEOPLE ||--o{ PEOPLE_ROLES : "0..*"
+    ROLES ||--o{ PEOPLE_ROLES : "0..*"
+    
+    SKILLS {
         int id
-        string first_name
-        string last_name
+        varchar(255) name
+        varchar(255) description
+        varchar(255) tag
     }
-    DELIVERY-ADDRESS {
+    PEOPLE {
+        int people_id
+        varchar(255) first_name
+        varchar(255) last_name
+        varchar(255) email
+        varchar(4096) linkedin_url
+        varchar(4096) headshot_url
+        varchar(255) discord_handle
+        varchar(4096) brief_bio
+    }
+    PEOPLE_SKILLS {
         int id
+        int skills_id
+        int people_id
+        date date_acquired
     }
+    ROLES {
+        int id
+        varchar(255) name
+        int sort_priority
+    }
+    PEOPLE_ROLES {
+        int id
+        int people_id
+        int role_id
+        date date_assigned
+    }
+
 ```
 
 ## Examples of data in the database
 
-For the people, skills, and roles tables, provide a description of each table and it's contents. Then provide a listing of the entire table.
+People Table
+The people table stores information about individuals. It includes the following fields:
+
+people_id: Unique identifier for each person.
+first_name: First name of the individual.
+last_name: Last name of the individual.
+email: Email address of the person.
+linkedin_url: URL to the person's LinkedIn profile.
+headshot_url: URL to the person's headshot image.
+discord_handle: Discord handle of the individual.
+brief_bio: A brief biography or description.
+
+Skills Table
+The skills table contains information about various skills. It comprises the following fields:
+
+id: Unique identifier for each skill.
+name: Name of the skill.
+description: Description explaining the skill.
+tag: A tag categorizing the skill.
+
+Roles Table
+The roles table stores details about different roles. It consists of the following fields:
+
+id: Unique identifier for each role.
+name: Name of the role.
+sort_priority: An integer representing the priority/order of the role.
+
 
 ### People table
 
@@ -147,10 +214,8 @@ The *skills* table contains elements that describe ...
 Below is a list of data in the *skills* table.
 
 ```{python}
-#| echo: false
-#| eval: true
+SELECT * FROM skills;
 
-## Add code to list roles table here
 ```
 
 ### Roles table
@@ -160,10 +225,8 @@ The *roles* table contains elements that describe ...
 Below is a list of data in the *roles* table.
 
 ```{python}
-#| echo: false
-#| eval: true
+SELECT * FROM roles;
 
-## Add code to list roles table here
 ```
 
 
@@ -201,29 +264,80 @@ df
 
 ### List people names and email addresses ordered by last_name
 
+```{python}
+SELECT last_name, email
+FROM people
+ORDER BY last_name;
+```
 
 ### List skill names of Person 1
 
+```{python}
+SELECT s.name AS skill_name
+FROM skills s
+JOIN peopleskills ps ON s.id = ps.skills_id
+WHERE ps.people_id = 1;
+```
 
 ### List people names with Skill 6
 
+```{python}
+SELECT p.last_name
+FROM people p
+JOIN peopleskills ps ON p.people_id = ps.people_id
+WHERE ps.skills_id = 6;
+```
 
 ### List people with a DEVELOPER role
 
+```{python}
+SELECT p.last_name
+FROM people p
+JOIN peopleroles pr ON p.people_id = pr.people_id
+JOIN roles r ON pr.role_id = r.id
+WHERE r.name = 'Developer';
+```
 
 ### List names and email addresses of people without skills
 
+```{python}
+SELECT p.last_name, p.email
+FROM people p
+LEFT JOIN peopleskills ps ON p.people_id = ps.people_id
+WHERE ps.skills_id IS NULL;
+```
 
 ### List names and tags of unused skills
 
+```{python}
+SELECT s.name, s.tag
+FROM skills s
+LEFT JOIN peopleskills ps ON s.id = ps.skills_id
+WHERE ps.skills_id IS NULL;
+```
 
 ### List people names and skill names with the BOSS role
 
+```{python}
+SELECT p.last_name, s.name AS skill_name
+FROM people p
+JOIN peopleroles pr ON p.people_id = pr.people_id
+JOIN roles r ON pr.role_id = r.id
+JOIN peopleskills ps ON p.people_id = ps.people_id
+JOIN skills s ON ps.skills_id = s.id
+WHERE r.name = 'Boss';
+```
 
 ### List ids and names of unused roles
 
+```{python}
+SELECT r.id, r.name
+FROM roles r
+LEFT JOIN peopleroles pr ON r.id = pr.role_id
+WHERE pr.role_id IS NULL;
+```
 
 ## Reflection
 
-(Write a paragraph expressing your thoughts, feelings, and insights about your experience with this assignment.  Pause and breath before writing - I'm trying to encourage critical thinking and self-awareness while allowing you to explore the connections between theory and practice. And yes, delete this paragraph.)
+Working on this assignment allowed for a deeper understanding of database design, SQL queries, and their practical implementation. The task of structuring tables, defining relationships, and executing SQL commands helped bridge the gap between theoretical knowledge and practical application. It highlighted the importance of accurate data modeling, query optimization, and the significance of precise syntax. This experience fostered a stronger grasp of database management concepts and emphasized the need for meticulousness in database design and querying processes.
 
