@@ -214,8 +214,19 @@ The *skills* table contains elements that describe ...
 Below is a list of data in the *skills* table.
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT * FROM skills;
-
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### Roles table
@@ -225,8 +236,19 @@ The *roles* table contains elements that describe ...
 Below is a list of data in the *roles* table.
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT * FROM roles;
-
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 
@@ -258,67 +280,141 @@ except Exception as e:
     print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
     df = pd.DataFrame()
 df
-
 ```
 
 
 ### List people names and email addresses ordered by last_name
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT last_name, email
 FROM people
 ORDER BY last_name;
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### List skill names of Person 1
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT s.name AS skill_name
 FROM skills s
 JOIN peopleskills ps ON s.id = ps.skills_id
 WHERE ps.people_id = 1;
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### List people names with Skill 6
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT p.last_name
 FROM people p
 JOIN peopleskills ps ON p.people_id = ps.people_id
 WHERE ps.skills_id = 6;
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### List people with a DEVELOPER role
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT p.last_name
 FROM people p
 JOIN peopleroles pr ON p.people_id = pr.people_id
 JOIN roles r ON pr.role_id = r.id
 WHERE r.name = 'Developer';
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### List names and email addresses of people without skills
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT p.last_name, p.email
 FROM people p
 LEFT JOIN peopleskills ps ON p.people_id = ps.people_id
 WHERE ps.skills_id IS NULL;
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### List names and tags of unused skills
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT s.name, s.tag
 FROM skills s
 LEFT JOIN peopleskills ps ON s.id = ps.skills_id
 WHERE ps.skills_id IS NULL;
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### List people names and skill names with the BOSS role
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT p.last_name, s.name AS skill_name
 FROM people p
 JOIN peopleroles pr ON p.people_id = pr.people_id
@@ -326,15 +422,36 @@ JOIN roles r ON pr.role_id = r.id
 JOIN peopleskills ps ON p.people_id = ps.people_id
 JOIN skills s ON ps.skills_id = s.id
 WHERE r.name = 'Boss';
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### List ids and names of unused roles
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = f"""
 SELECT r.id, r.name
 FROM roles r
 LEFT JOIN peopleroles pr ON r.id = pr.role_id
 WHERE pr.role_id IS NULL;
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ## Reflection

@@ -2,7 +2,7 @@
 name = "cmsc508-fa2023-hw7-template"
 version = "0.1.0"
 description = ""
-authors = ["John Leonard <jdleonard@vcu.edu>"]
+authors = ["Benjamin Estrada <estradab@vcu.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

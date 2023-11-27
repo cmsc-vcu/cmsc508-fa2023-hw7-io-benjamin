@@ -80,16 +80,16 @@ CREATE TABLE people (
 # Other fields are for you to assign.
 
 insert into people (people_id,last_name,email) values 
-(1,'Person 1','v3w8x2y@example.com'),
-(2,'Person 2','d9b3e4@example.com'),
-(3,'Person 3','u1r7p5q@example.com'),
-(4,'Person 4','s6t9z1@example.com'),
-(5,'Person 5','a4c7z9@example.com'),
-(6,'Person 6','f5g6t2@example.com'),
-(7,'Person 7','k9j4p7@example.com'),
-(8,'Person 8','x2y4n8@example.com'),
-(9,'Person 9','m1q9r3@example.com'),
-(10,'Person 10','h7e4s5@example.com');
+(1,'Harrison','v3w8x2y@example.com'),
+(2,'Lopez','d9b3e4@example.com'),
+(3,'Bennett','u1r7p5q@example.com'),
+(4,'Collins','s6t9z1@example.com'),
+(5,'Ramirez','a4c7z9@example.com'),
+(6,'Foster','f5g6t2@example.com'),
+(7,'Murphy','k9j4p7@example.com'),
+(8,'Peterson','x2y4n8@example.com'),
+(9,'Jenkins','m1q9r3@example.com'),
+(10,'Patel','h7e4s5@example.com');
 
  
 
